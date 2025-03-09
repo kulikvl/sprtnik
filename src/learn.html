@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Šprtník Learn</title>
+    <link rel="stylesheet" href="/styles/main.css" />
+    <script type="module" src="/scripts/learn.js"></script>
+  </head>
+  <body>
+    <h1>Learning mode</h1>
+    <a href="/">Go back</a>
+
+    <div id="mainContainer" style="display: none">
+      <div>
+        <p>Remaining Cards: <span id="remainingCount"></span></p>
+      </div>
+
+      <div id="cardContainer">
+        <div
+          id="cardArea"
+          style="border: 1px solid #ccc; padding: 10px; width: 300px; margin-bottom: 10px"
+        >
+          <div id="questionArea"></div>
+          <div id="answerArea" style="display: none; margin-top: 10px"></div>
+          <img id="imageArea" style="display: none; max-width: 100%; margin-top: 10px" />
+        </div>
+
+        <div>
+          <button id="showAnswerBtn">Show Answer</button>
+          <button id="easyBtn" style="display: none">Easy</button>
+          <button id="goodBtn" style="display: none">Good</button>
+          <button id="againBtn" style="display: none">Again</button>
+        </div>
+      </div>
+
+      <div
+        id="completedMessage"
+        style="display: none; margin-top: 20px; color: green; font-weight: bold"
+      >
+        Great job! You have completed all cards!
+      </div>
+    </div>
+  </body>
+</html>

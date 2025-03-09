@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "prettier": "3.5.3",
     "vite": "6.2.1"
+  },
+  "dependencies": {
+    "jszip": "3.10.1"
   }
 }
