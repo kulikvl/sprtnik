@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --primary: #6f43c0;
   --on-primary: #ffffff;
   --primary-container: #ebddff;
@@ -35,4 +35,104 @@
   --surface-container: #f2ecf1;
   --surface-container-high: #ece6eb;
   --surface-container-highest: #e6e1e6;
+} */
+
+body {
+  margin: 0;
+  padding: 1rem;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+    'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+} */
+
+/* .ce-toolbar__actions {
+  right: auto !important;
+  left: -100px !important;
+} */
+
+/* .ce-toolbar__actions {
+  opacity: 1 !important;
+}
+.ce-toolbar {
+  display: block !important;
+} */
+
+.editor-container {
+  max-height: 25vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+/* .editor-container .ce-popover,
+.editor-container .ce-toolbar {
+  position: absolute !important;
+  z-index: 999;
+} */
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* Initial visible state */
+  opacity: 1;
+  pointer-events: auto;
+
+  /* Make it visually distinct, e.g. a semi-transparent background */
+  background-color: rgba(255, 255, 255, 0.99);
+
+  /* On top of everything else */
+  z-index: 9999;
+
+  /* Smooth transition for fade-out */
+  transition: opacity 0.6s ease;
+}
+
+.spinner {
+  /* Center spinner content in the middle of the screen */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* ... any spinner styles, animation, etc. */
+}
+
+/* Hidden (faded-out) state */
+.loading-overlay.hidden {
+  opacity: 0;
+  pointer-events: none; /* allows clicks to pass through */
+}
+
+/* By default, hide the controls */
+.editor-container .ce-block__settings-btn,
+.editor-container .ce-block-controls,
+.editor-container .ce-block-controls__button,
+.editor-container .ce-inline-toolbar,
+.editor-container .ce-toolbar,
+.editor-container .ce-popover {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s ease;
+}
+
+/* Reveal them when hovering the container */
+.editor-container:hover .ce-block__settings-btn,
+.editor-container:hover .ce-block-controls,
+.editor-container:hover .ce-block-controls__button,
+.editor-container:hover .ce-inline-toolbar,
+.editor-container:hover .ce-toolbar,
+.editor-container:hover .ce-popover {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+

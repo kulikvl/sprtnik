@@ -5,70 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="google" content="notranslate" />
-    <title>Šprtník</title>
     <link rel="stylesheet" href="/styles/main.css" />
-    <!-- <script type="module" src="/scripts/index.js"></script> -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/beercss@3.9.7/dist/cdn/beer.min.css"
-      rel="stylesheet"
-    />
-    <script
-      type="module"
-      src="https://cdn.jsdelivr.net/npm/beercss@3.9.7/dist/cdn/beer.min.js"
-    ></script>
-    <script
-      type="module"
-      src="https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.2/dist/cdn/material-dynamic-colors.min.js"
-    ></script>
+    <script type="module" src="/scripts/index.js"></script>
+    <title>Šprtník</title>
   </head>
-  <body class="light">
-    <main class="responsive">
-      <!-- <img src="https://www.beercss.com/beer-and-woman.svg" class="responsive round" /> -->
+  <body>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="spinner">
+        <!-- your spinner/loader graphic here -->
+        <!-- Loading... -->
+      </div>
+    </div>
 
-      <button id="exportBtn" class="tertiary small">Export to ZIP</button>
+    <main>
       <input type="file" id="importInput" accept=".zip" style="display: none" />
-      <button id="importBtn" class="tertiary small">Import from ZIP</button>
+      <button id="importBtn" type="button" class="btn btn-info">Import from ZIP</button>
+      <button id="exportBtn" type="button" class="btn btn-info">Export to ZIP</button>
 
-      <article class="border">
-        <h5>Create a New Flashcard</h5>
+      <div id="cardEditor" class="border border-primary p-3 mt-3 mb-3 d-flex flex-column gap-3">
+        <div class="editor-container">
+          <div id="questionEditor"></div>
+        </div>
+        <div class="editor-container">
+          <div id="answerEditor"></div>
+        </div>
+        <input id="tags" type="text" class="form-control border border-primary" />
+        <div id="btnRow" class="d-flex gap-2">
+          <button id="saveBtn" type="button" class="btn btn-primary">Save</button>
+          <button id="addBtn" type="button" class="btn btn-success">Add</button>
+          <button id="clearBtn" type="button" class="btn btn-warning">Clear</button>
+          <button id="deleteBtn" type="button" class="btn btn-danger">Delete</button>
+        </div>
+      </div>
 
-        <form id="flashcardForm">
-          <div class="field textarea label border min">
-            <textarea id="flashcardQuestion"></textarea>
-            <label>Question</label>
-          </div>
+      <hr />
 
-          <button>
-            <i>attach_file</i>
-            <span>Images</span>
-            <input id="questionImageInput" type="file" accept="image/png" multiple />
-          </button>
+      <div id="tagList" class="d-flex flex-wrap gap-2"></div>
 
-          <div class="field textarea label border min">
-            <textarea id="flashcardAnswer"></textarea>
-            <label>Answer</label>
-          </div>
+      <hr />
 
-          <button>
-            <i>attach_file</i>
-            <span>Images</span>
-            <input id="answerImageInput" type="file" accept="image/png" multiple />
-          </button>
+      <button id="learnBtn" type="button" class="btn btn-primary">
+        Learn cards with selected tags
+      </button>
 
-          <div class="field label border">
-            <input type="text" id="flashcardTags" />
-            <label>Tags (comma-separated)</label>
-          </div>
+      <hr />
 
-          <button type="submit">Add Flashcard</button>
-        </form>
-      </article>
-
-      <div id="tagList"></div>
-
-      <button id="learnBtn">Learn cards with selected tags</button>
-
-      <div id="flashcardList"></div>
+      <div id="cardList" class="d-flex flex-wrap gap-2"></div>
     </main>
   </body>
 </html>

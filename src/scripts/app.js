@@ -1,14 +1,3 @@
-export class Flashcard {
-  constructor({ question = '', answer = '', tags = [], questionImages = [], answerImages = [] }) {
-    this.question = question;
-    this.answer = answer;
-    this.tags = tags;
-    this.questionImages = questionImages;
-    this.answerImages = answerImages;
-    this.createdAt = Date.now();
-  }
-}
-
 export class LearningProgressService {
   static #STORAGE_KEY = 'learningProgress';
 
@@ -61,6 +50,7 @@ export class LearningProgressService {
     return {
       total: progress.allCardIds.length,
       remaining: progress.queueCardIds.length,
+      done: progress.allCardIds.length - progress.queueCardIds.length,
     };
   }
 }

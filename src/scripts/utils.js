@@ -1,4 +1,4 @@
-export default class Utils {
+export class Utils {
   /**
    * Trigger a browser download of a Blob.
    */
@@ -12,5 +12,10 @@ export default class Utils {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  static hideLoadingScreen() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.classList.add('hidden');
   }
 }

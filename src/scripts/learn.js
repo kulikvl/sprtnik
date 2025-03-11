@@ -1,83 +1,69 @@
-import * as db from './db';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 import { LearningProgressService } from './app';
-
-console.log('learn.js')
-
-const mainContainer = document.getElementById('mainContainer');
-const cardContainer = document.getElementById('cardContainer');
-const remainingCountEl = document.getElementById('remainingCount');
-const questionArea = document.getElementById('questionArea');
-const answerArea = document.getElementById('answerArea');
-const imageArea = document.getElementById('imageArea');
-const showAnswerBtn = document.getElementById('showAnswerBtn');
-const easyBtn = document.getElementById('easyBtn');
-const goodBtn = document.getElementById('goodBtn');
-const againBtn = document.getElementById('againBtn');
-const completedMessage = document.getElementById('completedMessage');
-
-let currentCard = null;
+import { CardStore, Database, ImageStore } from './database';
+import { CardEditor } from './editor';
+import { Utils } from './utils';
 
 function updateStats() {
   const stats = LearningProgressService.getStats();
-  remainingCountEl.textContent = `${stats.remaining} / ${stats.total}`;
+
+  let value = (stats.done / stats.total) * 100;
+  progressBarEl.style.width = `${value}%`;
+  progressBarEl.textContent = `${stats.done} / ${stats.total}`;
+
+  if (value === 100) {
+    progressBarEl.classList.add('bg-success');
+    reviewAreaEl.classList.add('d-none');
+  } else {
+    progressBarEl.classList.remove('bg-success');
+  }
 }
 
 async function loadNextCard() {
+  updateStats();
+  
   const queueIds = LearningProgressService.getQueueCardIds();
 
   if (queueIds.length === 0) {
-    cardContainer.style.display = 'none';
-    // questionArea.textContent = '';
-    // answerArea.textContent = '';
-    // imageArea.style.display = 'none';
-
-    // showAnswerBtn.style.display = 'none';
-    // easyBtn.style.display = 'none';
-    // goodBtn.style.display = 'none';
-    // againBtn.style.display = 'none';
-
-    completedMessage.style.display = 'block';
     return;
   }
 
-  answerArea.style.display = 'none';
-  answerArea.textContent = '';
-  imageArea.style.display = 'none';
+  showAnswerBtnEl.classList.remove('d-none');
+  markAreaEl.classList.add('d-none');
 
-  showAnswerBtn.style.display = 'inline-block';
-  easyBtn.style.display = 'none';
-  goodBtn.style.display = 'none';
-  againBtn.style.display = 'none';
+  currentCardId = queueIds[0];
+  cardEditor.loadCardById(currentCardId);
 
-  currentCard = await db.getOneFlashcard(queueIds[0]);
-
-  questionArea.textContent = currentCard.question ?? 'No question found';
-
-  // if (currentCardData.imageBase64) {
-  //   imageArea.src = currentCardData.imageBase64;
-  //   imageArea.style.display = 'block';
-  // }
+  await cardEditor.renderCardContent({
+    showQuestion: true,
+    showAnswer: false,
+    showTags: false,
+    showEditButtons: false,
+    readOnly: true,
+  });
 }
 
-function showAnswer() {
-  if (!currentCard) return;
+async function showAnswer() {
+  await cardEditor.renderCardContent({
+    showQuestion: true,
+    showAnswer: true,
+    showTags: false,
+    showEditButtons: false,
+    readOnly: true,
+  });
 
-  answerArea.textContent = currentCard.answer ?? 'No answer found';
-  answerArea.style.display = 'block';
-
-  showAnswerBtn.style.display = 'none';
-  easyBtn.style.display = 'inline-block';
-  goodBtn.style.display = 'inline-block';
-  againBtn.style.display = 'inline-block';
+  showAnswerBtnEl.classList.add('d-none');
+  markAreaEl.classList.remove('d-none');
 }
 
 async function markEasy() {
   LearningProgressService.removeFirstFromQueue();
-  updateStats();
   await loadNextCard();
 }
 
-async function markGood() {
+async function markOk() {
   const removedCardId = LearningProgressService.removeFirstFromQueue();
   LearningProgressService.addToQueue(removedCardId);
   await loadNextCard();
@@ -87,13 +73,30 @@ async function markAgain() {
   await loadNextCard();
 }
 
-showAnswerBtn.addEventListener('click', showAnswer);
-easyBtn.addEventListener('click', markEasy);
-goodBtn.addEventListener('click', markGood);
-againBtn.addEventListener('click', markAgain);
+const database = new Database();
+await database.init();
 
-await db.initDB();
+const imageStore = new ImageStore(database);
+const cardStore = new CardStore(database);
+
+const cardEditor = new CardEditor(cardStore, imageStore);
+await cardEditor.init();
+
+const showAnswerBtnEl = document.getElementById('showAnswerBtn');
+const againBtnEl = document.getElementById('againBtn');
+const okBtnEl = document.getElementById('okBtn');
+const easyBtnEl = document.getElementById('easyBtn');
+const reviewAreaEl = document.getElementById('reviewArea');
+const markAreaEl = document.getElementById('markArea');
+const progressBarEl = document.getElementById('progressBar');
+
+let currentCardId = null;
+
+showAnswerBtnEl.addEventListener('click', showAnswer);
+againBtnEl.addEventListener('click', markAgain);
+okBtnEl.addEventListener('click', markOk);
+easyBtnEl.addEventListener('click', markEasy);
+
 await loadNextCard();
-updateStats();
 
-mainContainer.style.display = 'block';
+Utils.hideLoadingScreen();
