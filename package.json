@@ -14,6 +14,7 @@
     "vite": "6.2.1"
   },
   "dependencies": {
+    "@editorjs/delimiter": "^1.4.2",
     "@editorjs/editorjs": "^2.30.8",
     "@editorjs/header": "^2.8.8",
     "@editorjs/image": "^2.10.2",

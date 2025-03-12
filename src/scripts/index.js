@@ -160,10 +160,11 @@ document.getElementById('exportBtn').addEventListener('click', async () => {
 const importInput = document.getElementById('importInput');
 importInput.addEventListener('change', async e => {
   const file = e.target.files[0];
-  if (file) {
-    await zipDataManager.importData(file);
-    e.target.value = '';
-  }
+  if (!file) return;
+  await zipDataManager.importData(file);
+  console.log("target value:", e.target.value);
+  await renderCardList();
+  await renderTagList();
 });
 document.getElementById('importBtn').addEventListener('click', () => {
   importInput.click();

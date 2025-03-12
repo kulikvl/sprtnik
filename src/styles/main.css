@@ -64,11 +64,19 @@ body {
 } */
 
 .editor-container {
-  max-height: 25vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border: 1px solid #ccc;
+  /* max-height: 20vh; */
+  /* overflow-y: auto; */
+  /* overflow-x: hidden; */
+  border: 2px solid #ccc;
   background-color: #fff;
+  padding-right: 5rem;
+  padding-left: 5rem;
+
+
+  /* padding: 20px;   */
+  /* display: flex;          
+  justify-content: center;
+  align-items: flex-start;    */
 }
 
 /* .editor-container .ce-popover,
@@ -83,7 +91,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  
+
   /* Initial visible state */
   opacity: 1;
   pointer-events: auto;
@@ -136,3 +144,59 @@ body {
   pointer-events: auto !important;
 }
 
+/*
+https://github.com/codex-team/editor.js/issues/724
+https://github.com/codex-team/editor.js/discussions/1867
+*/
+
+/* .ce-block__content,
+.ce-toolbar__content {
+  max-width: calc(100% - 100px) !important;
+}
+.cdx-block {
+  max-width: 100% !important;
+}
+.codex-editor__loader {
+  height: 38px !important;
+}
+.codex-editor__redactor {
+  padding-bottom: 38px !important;
+} */
+
+/* .codex-editor__redactor {
+  padding-left: 10px !important;
+} */
+
+/* .ce-block__content,
+.ce-toolbar__content {
+  max-width: 80% !important;
+  margin: 50px !important;
+  text-align: left !important;
+} */
+
+/* .codex-editor__redactor {
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+.ce-block,
+.cdx-block {
+  max-width: 100% !important;
+  margin: 0 !important;
+} */
+
+/* .codex-editor__redactor {
+  width: 100% !important;
+  margin: 0 !important;
+} */
+
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: unset;
+}
+
+/* .ce-block__content,
+.ce-toolbar__content,
+.codex-editor__redactor {
+  max-width: unset;
+} */

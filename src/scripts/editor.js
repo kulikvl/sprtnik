@@ -2,6 +2,7 @@ import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Image from '@editorjs/image';
+import Delimiter from '@editorjs/delimiter';
 
 export class EditorAdapter {
   /**
@@ -21,7 +22,7 @@ export class EditorAdapter {
   async init() {
     return new Promise((resolve, _) => {
       this.#editorInstance = new EditorJS({
-        minHeight: 300,
+        // minHeight: 250,
         autofocus: false,
         inlineToolbar: false,
         hideToolbar: true,
@@ -29,6 +30,7 @@ export class EditorAdapter {
         holder: this.#containerId,
         readOnly: false,
         tools: {
+          delimiter: Delimiter,
           header: {
             class: Header,
           },
@@ -40,8 +42,9 @@ export class EditorAdapter {
             config: {
               uploader: {
                 uploadByFile: async file => {
-                  const imageId = await this.#imageStore.add(file);
-                  const objectURL = URL.createObjectURL(file);
+                  const blob = new Blob([file], { type: '' });
+                  const imageId = await this.#imageStore.add(blob);
+                  const objectURL = URL.createObjectURL(blob);
 
                   return {
                     success: 1,
@@ -68,7 +71,7 @@ export class EditorAdapter {
 
     await Promise.all(
       data.blocks.map(async block => {
-        if (block.type === 'image' && block?.data?.file?.key) {
+        if (block.type === 'image' && block.data?.file?.key) {
           const blobKey = block.data.file.key;
           const blob = await this.#imageStore.get(blobKey);
           block.data.file.url = URL.createObjectURL(blob);
@@ -80,7 +83,9 @@ export class EditorAdapter {
   }
 
   async getData() {
-    return await this.#editorInstance.save();
+    const x = await this.#editorInstance.save();
+    console.log('Editor data:', x);
+    return x;
   }
 
   async isEmpty() {
@@ -90,7 +95,25 @@ export class EditorAdapter {
 
   async setReadOnly(flag) {
     if (this.#isReadOnly === flag) return;
+
     this.#isReadOnly = flag;
+
+    if (this.#isReadOnly) {
+      document.querySelectorAll('.codex-editor__loader').forEach(element => {
+        element.style.setProperty('height', '30px', 'important');
+      });
+      document.querySelectorAll('.codex-editor__redactor').forEach(element => {
+        element.style.setProperty('padding-bottom', '30px', 'important');
+      });
+    } else {
+      document.querySelectorAll('.codex-editor__loader').forEach(element => {
+        element.style.setProperty('height', '250px', 'important');
+      });
+      document.querySelectorAll('.codex-editor__redactor').forEach(element => {
+        element.style.setProperty('padding-bottom', '250px', 'important');
+      });
+    }
+
     await this.#editorInstance.readOnly.toggle();
   }
 }
