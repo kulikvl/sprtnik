@@ -1,61 +1,49 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
 import { LearningProgressService } from './app';
 import { CardStore, Database, ImageStore } from './database';
-import { CardEditor } from './editor';
+import { CardViewer } from './editor';
 import { Utils } from './utils';
 
 function updateStats() {
   const stats = LearningProgressService.getStats();
 
   let value = (stats.done / stats.total) * 100;
-  progressBarEl.style.width = `${value}%`;
-  progressBarEl.textContent = `${stats.done} / ${stats.total}`;
+  if (value === 0) value = 3;
 
-  if (value === 100) {
-    progressBarEl.classList.add('bg-success');
-    reviewAreaEl.classList.add('d-none');
-  } else {
-    progressBarEl.classList.remove('bg-success');
-  }
+  state.dom.progress.bar.style.width = `${value}%`;
+  state.dom.progress.doneCount.textContent = `${stats.done}`;
+  state.dom.progress.allCount.textContent = `/${stats.total}`;
 }
 
 async function loadNextCard() {
   updateStats();
-  
-  const queueIds = LearningProgressService.getQueueCardIds();
 
+  const queueIds = LearningProgressService.getQueueCardIds();
   if (queueIds.length === 0) {
+    if (state.cardViewer.instance) {
+      state.cardViewer.instance.destroy();
+      state.cardViewer.instance = null;
+      state.cardViewer.card = null;
+    }
+
+    state.dom.main.classList.add('hidden');
+    state.dom.footer.classList.add('hidden');
+
     return;
   }
 
-  showAnswerBtnEl.classList.remove('d-none');
-  markAreaEl.classList.add('d-none');
+  state.cardViewer.card = await state.stores.card.get(queueIds[0]);
 
-  currentCardId = queueIds[0];
-  cardEditor.loadCardById(currentCardId);
-
-  await cardEditor.renderCardContent({
-    showQuestion: true,
-    showAnswer: false,
-    showTags: false,
-    showEditButtons: false,
-    readOnly: true,
-  });
+  if (!state.cardViewer.instance) {
+    state.cardViewer.instance = new CardViewer(state.stores.image);
+    await state.cardViewer.instance.init(state.cardViewer.card);
+  } else {
+    await state.cardViewer.instance.flip();
+    state.cardViewer.instance.setCardData(state.cardViewer.card);
+  }
 }
 
-async function showAnswer() {
-  await cardEditor.renderCardContent({
-    showQuestion: true,
-    showAnswer: true,
-    showTags: false,
-    showEditButtons: false,
-    readOnly: true,
-  });
-
-  showAnswerBtnEl.classList.add('d-none');
-  markAreaEl.classList.remove('d-none');
+async function flip() {
+  state.cardViewer.instance.flip();
 }
 
 async function markEasy() {
@@ -73,30 +61,53 @@ async function markAgain() {
   await loadNextCard();
 }
 
-const database = new Database();
-await database.init();
+// =================== Main ===================
 
-const imageStore = new ImageStore(database);
-const cardStore = new CardStore(database);
+const state = {
+  stores: {
+    image: null,
+    card: null,
+  },
+  cardViewer: {
+    instance: null,
+    card: null,
+  },
+  dom: {
+    footer: null,
+    main: null,
+    progress: {
+      bar: null,
+      doneCount: null,
+      allCount: null,
+    },
+  },
+};
 
-const cardEditor = new CardEditor(cardStore, imageStore);
-await cardEditor.init();
+async function main() {
+  const database = new Database();
+  await database.init();
 
-const showAnswerBtnEl = document.getElementById('showAnswerBtn');
-const againBtnEl = document.getElementById('againBtn');
-const okBtnEl = document.getElementById('okBtn');
-const easyBtnEl = document.getElementById('easyBtn');
-const reviewAreaEl = document.getElementById('reviewArea');
-const markAreaEl = document.getElementById('markArea');
-const progressBarEl = document.getElementById('progressBar');
+  state.stores.image = new ImageStore(database);
+  state.stores.card = new CardStore(database);
 
-let currentCardId = null;
+  const flipBtnEl = document.getElementById('flipBtn');
+  const againBtnEl = document.getElementById('againBtn');
+  const okBtnEl = document.getElementById('okBtn');
+  const easyBtnEl = document.getElementById('easyBtn');
+  state.dom.main = document.getElementById('main');
+  state.dom.footer = document.getElementById('footer');
+  state.dom.progress.bar = document.getElementById('progressBar');
+  state.dom.progress.doneCount = document.getElementById('doneCount');
+  state.dom.progress.allCount = document.getElementById('allCount');
 
-showAnswerBtnEl.addEventListener('click', showAnswer);
-againBtnEl.addEventListener('click', markAgain);
-okBtnEl.addEventListener('click', markOk);
-easyBtnEl.addEventListener('click', markEasy);
+  flipBtnEl.addEventListener('click', flip);
+  againBtnEl.addEventListener('click', markAgain);
+  okBtnEl.addEventListener('click', markOk);
+  easyBtnEl.addEventListener('click', markEasy);
 
-await loadNextCard();
+  await loadNextCard();
 
-Utils.hideLoadingScreen();
+  Utils.hideLoadingScreen();
+}
+
+await main();

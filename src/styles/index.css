@@ -1,0 +1,213 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-dialog {
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+  margin: 10% auto;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  padding: 16px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.close-button,
+.save-button {
+  cursor: pointer;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.close-button {
+  background-color: transparent;
+  font-weight: bold;
+}
+
+.save-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.modal-body {
+  min-height: 100px;
+}
+
+.modal-footer {
+  border-top: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.editor-container {
+  border-radius: 12px;
+  border: 1px solid black;
+  background-color: rgb(245, 245, 245);
+  border-color: rgb(229, 229, 229);
+  padding-right: 10rem;
+  padding-left: 10rem;
+}
+
+.editor-container:focus-within {
+  background-color: rgb(235, 235, 235);
+}
+
+/* By default, hide the controls */
+.editor-container .ce-block__settings-btn,
+.editor-container .ce-block-controls,
+.editor-container .ce-block-controls__button,
+.editor-container .ce-inline-toolbar,
+.editor-container .ce-toolbar,
+.editor-container .ce-popover {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.2s ease;
+}
+
+/* Reveal them when hovering the container */
+.editor-container:hover .ce-block__settings-btn,
+.editor-container:hover .ce-block-controls,
+.editor-container:hover .ce-block-controls__button,
+.editor-container:hover .ce-inline-toolbar,
+.editor-container:hover .ce-toolbar,
+.editor-container:hover .ce-popover {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/*
+https://github.com/codex-team/editor.js/issues/724
+https://github.com/codex-team/editor.js/discussions/1867
+*/
+
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: unset;
+}
+
+/* .modal-dialog {
+  transform: none !important;
+}
+
+.modal-content {
+  border-radius: 32px !important;
+} */
+
+.card-editor-modal-tag-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  /* justify-content: flex-start; */
+  gap: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.card-editor-modal-tag-list {
+  flex-shrink: 1;
+  flex-basis: auto;
+  min-width: 0;
+  overflow-x: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.card-editor-modal-tag-list::-webkit-scrollbar {
+  display: none;
+}
+
+.card-editor-modal-tag-input {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 15rem;
+  border: none;
+  outline: none;
+}
+
+#tagList {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+#cardList {
+  display: flex;
+  gap: 0.3rem;
+  flex-direction: column;
+}
+
+.card {
+  background-color: white;
+  border: 1px solid rgb(229, 229, 229);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  cursor: pointer;
+}
+
+.card-content {
+  text-align: left;
+}
+
+.tag {
+  background-color: white;
+  border: 0px solid rgb(229, 229, 229);
+  border-radius: 16px;
+  color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+
+.tag.active {
+  filter: brightness(0.85);
+}
+
+#cardEditor {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}

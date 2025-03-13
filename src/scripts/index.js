@@ -1,38 +1,8 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 import { CardStore, Database, ImageStore } from './database';
 import { CardEditor } from './editor';
 import { Utils } from './utils';
 import { LearningProgressService } from './app';
 import { ZipDataManager } from './zip';
-
-// import EditorJS from '@editorjs/editorjs';
-// import Header from '@editorjs/header';
-// import List from '@editorjs/list';
-// import Image from '@editorjs/image';
-
-// new EditorJS({
-//   holder: 'test',
-//   data: {
-//     time: Date.now(),
-//     blocks: [
-//       {
-//         type: 'paragraph',
-//         data: {
-//           text: 'Hello! Feel free to edit or insert an image.',
-//         },
-//       },
-//     ],
-//   },
-//   tools: {
-//     header: {
-//       class: Header,
-//     },
-//     list: {
-//       class: List,
-//     },
-//   },
-// })
 
 function getQuestionSnippet(editorData, maxLen = 20) {
   if (!editorData?.blocks?.length) return 'No content';
@@ -47,9 +17,9 @@ function getQuestionSnippet(editorData, maxLen = 20) {
 }
 
 async function handleLearn() {
-  const allCards = await cardStore.getAll();
+  const allCards = await state.stores.card.getAll();
   const cardsWithSelectedTagsIds = allCards
-    .filter(card => selectedTags.every(tag => card.tags?.includes(tag)))
+    .filter(card => state.selectedTags.every(tag => card.tags?.includes(tag)))
     .map(card => card.id);
 
   LearningProgressService.saveLearningProgress({
@@ -57,117 +27,273 @@ async function handleLearn() {
     queueCardIds: cardsWithSelectedTagsIds,
   });
 
-  console.log('start learning', cardsWithSelectedTagsIds);
-
   window.location.assign('/learn');
 }
 
 async function renderTagList() {
-  tagListEl.innerHTML = '';
+  state.dom.tagList.innerHTML = '';
 
-  const tags = await cardStore.getAllTags();
+  const tags = await state.stores.card.getAllTags();
 
   tags.forEach(tag => {
+    const bgColor = Utils.stringToColor(tag);
+
     const tagBtn = document.createElement('button');
     tagBtn.textContent = tag;
-    tagBtn.classList.add('btn', 'btn-sm', 'btn-outline-secondary');
+    tagBtn.classList.add('tag');
+    tagBtn.style.backgroundColor = bgColor;
 
-    if (selectedTags.includes(tag)) {
+    if (state.selectedTags.includes(tag)) {
       tagBtn.classList.add('active');
     }
 
     tagBtn.addEventListener('click', async () => {
-      if (selectedTags.includes(tag)) {
-        selectedTags = selectedTags.filter(t => t !== tag);
+      if (state.selectedTags.includes(tag)) {
+        state.selectedTags = state.selectedTags.filter(t => t !== tag);
         tagBtn.classList.remove('active');
       } else {
-        selectedTags.push(tag);
+        state.selectedTags.push(tag);
         tagBtn.classList.add('active');
       }
       await renderCardList();
     });
 
-    tagListEl.appendChild(tagBtn);
+    state.dom.tagList.appendChild(tagBtn);
   });
 }
 
+async function openCardEditor(card, mode) {
+  const cardEditor = new CardEditor(state.stores.image);
+  await cardEditor.init(card, false);
+
+  const tags = card?.tags || [];
+  for (const tag of tags) {
+    const bgColor = Utils.stringToColor(tag);
+    const badge = document.createElement('span');
+    badge.classList.add('badge', 'rounded-pill');
+    badge.textContent = tag;
+    badge.style.backgroundColor = bgColor;
+    state.dom.cardEditor.tagList.appendChild(badge);
+  }
+
+  state.cardEditor.instance = cardEditor;
+  state.cardEditor.card = card;
+
+  switch (mode) {
+    case 'edit':
+      state.dom.cardEditor.label.textContent = 'Edit card';
+      state.cardEditor.mode = 'edit';
+      break;
+    case 'add':
+      state.dom.cardEditor.label.textContent = 'Add new card';
+      state.cardEditor.mode = 'add';
+      break;
+  }
+
+  showCardEditorModal();
+}
+
 async function renderCardList() {
-  cardListEl.innerHTML = '';
+  state.dom.cardList.innerHTML = '';
 
-  let cards = await cardStore.getAll();
+  let cards = await state.stores.card.getAll();
 
-  if (selectedTags.length > 0) {
-    cards = cards.filter(card => selectedTags.every(tag => card.tags.includes(tag)));
+  if (state.selectedTags.length > 0) {
+    cards = cards.filter(card => state.selectedTags.every(tag => card.tags?.includes(tag)));
   }
 
   for (const card of cards) {
-    const snippet = getQuestionSnippet(card.question, 20);
+    const questionSnippet = getQuestionSnippet(card.question, 20);
+    const answerSnippet = getQuestionSnippet(card.answer, 20);
 
-    const cardBtn = document.createElement('button');
-    cardBtn.textContent = snippet;
-    cardBtn.classList.add('btn', 'btn-sm', 'btn-outline-primary');
-
-    if (card.id === selectedCardId) {
-      cardBtn.classList.add('active');
-    }
-
-    cardBtn.addEventListener('click', async () => {
-      selectedCardId = card.id;
-      await cardEditor.loadCardById(card.id);
-      await renderCardList();
+    const cardEl = document.createElement('button');
+    cardEl.classList.add('card');
+    const cardContentEl = document.createElement('div');
+    cardContentEl.classList.add('card-content');
+    const questionEl = document.createElement('p');
+    questionEl.style.marginBottom = '0';
+    questionEl.textContent = questionSnippet;
+    cardContentEl.appendChild(questionEl);
+    const answerEl = document.createElement('p');
+    answerEl.style.color = '#99999B';
+    answerEl.style.marginTop = '0.4rem';
+    answerEl.textContent = answerSnippet;
+    cardContentEl.appendChild(answerEl);
+    cardEl.appendChild(cardContentEl);
+    cardEl.addEventListener('click', async () => {
+      await openCardEditor(card, 'edit');
     });
 
-    cardListEl.appendChild(cardBtn);
+    state.dom.cardList.appendChild(cardEl);
   }
 }
 
-const database = new Database();
-await database.init();
+async function handleSaveCard() {
+  const cardEditorData = await state.cardEditor.instance.getCardData();
 
-const imageStore = new ImageStore(database);
-const cardStore = new CardStore(database);
+  state.cardEditor.card = {
+    ...state.cardEditor.card,
+    ...cardEditorData,
+    tags: state.cardEditor.tags,
+  };
 
-async function handleEditorChange(action) {
-  if (action === 'clear') {
-    selectedCardId = null;
+  switch (state.cardEditor.mode) {
+    case 'edit':
+      await state.stores.card.put(state.cardEditor.card);
+      hideCardEditorModal();
+      break;
+    case 'add':
+      await state.stores.card.add(state.cardEditor.card);
+      await state.cardEditor.instance.setCardData(null);
+      break;
   }
 
   await renderCardList();
   await renderTagList();
 }
 
-const cardEditor = new CardEditor(cardStore, imageStore, handleEditorChange);
-await cardEditor.init();
-await cardEditor.renderCardContent();
+function showCardEditorModal() {
+  state.dom.cardEditor.modal.classList.add('show');
+}
 
-let selectedCardId = null;
-let selectedTags = [];
+function hideCardEditorModal() {
+  state.dom.cardEditor.modal.classList.remove('show');
+  const hideEvent = new Event('modalHidden');
+  state.dom.cardEditor.modal.dispatchEvent(hideEvent);
+}
 
-const cardListEl = document.getElementById('cardList');
-const tagListEl = document.getElementById('tagList');
+// =================== Main ===================
 
-await renderTagList();
-await renderCardList();
+const state = {
+  cardEditor: {
+    instance: null,
+    mode: null,
+    card: null,
+    tags: [],
+  },
+  stores: {
+    image: null,
+    card: null,
+  },
+  dom: {
+    cardList: null,
+    tagList: null,
+    cardEditor: {
+      modal: null,
+      label: null,
+      tagList: null,
+      tagInput: null,
+    },
+  },
+  selectedTags: [],
+};
 
-document.getElementById('learnBtn').addEventListener('click', handleLearn);
+async function main() {
+  const database = new Database();
+  await database.init();
 
-const zipDataManager = new ZipDataManager(cardStore, imageStore);
+  state.stores.image = new ImageStore(database);
+  state.stores.card = new CardStore(database);
 
-document.getElementById('exportBtn').addEventListener('click', async () => {
-  const blob = await zipDataManager.exportData();
-  Utils.downloadBlob(blob, 'sprtnik.zip');
-});
-const importInput = document.getElementById('importInput');
-importInput.addEventListener('change', async e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  await zipDataManager.importData(file);
-  console.log("target value:", e.target.value);
-  await renderCardList();
+  const zipDataManager = new ZipDataManager(state.stores.card, state.stores.image);
+
+  document.getElementById('exportBtn').addEventListener('click', async () => {
+    const blob = await zipDataManager.exportData();
+    Utils.downloadBlob(blob, 'sprtnik.zip');
+  });
+  const importInput = document.getElementById('importInput');
+  importInput.addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    await zipDataManager.importData(file);
+    await renderCardList();
+    await renderTagList();
+  });
+  document.getElementById('importBtn').addEventListener('click', () => {
+    importInput.click();
+  });
+
+  state.dom.cardList = document.getElementById('cardList');
+  state.dom.tagList = document.getElementById('tagList');
+
+  document.getElementById('learnBtn').addEventListener('click', handleLearn);
+
+  state.dom.cardEditor.modal = document.getElementById('cardEditorModal');
+  state.dom.cardEditor.modal.addEventListener('modalHidden', function () {
+    if (state.cardEditor.instance) {
+      state.cardEditor.instance.destroy();
+    }
+
+    state.dom.cardEditor.tagList.innerHTML = '';
+    state.dom.cardEditor.tagInput.value = '';
+
+    state.cardEditor.instance = null;
+    state.cardEditor.card = null;
+    state.cardEditor.tags = [];
+    state.cardEditor.mode = null;
+  });
+
+  state.dom.cardEditor.label = document.getElementById('cardEditorModalLabel');
+
+  document.getElementById('addCardBtn').addEventListener('click', async () => {
+    await openCardEditor(null, 'add');
+  });
+
+  const cardEditorModalSaveBtnEl = document.getElementById('cardEditorModalSaveBtn');
+  cardEditorModalSaveBtnEl.addEventListener('click', async () => {
+    await handleSaveCard();
+  });
+  const cardEditorModalCloseBtnEl = document.getElementById('cardEditorModalCloseBtn');
+  cardEditorModalCloseBtnEl.addEventListener('click', async () => {
+    hideCardEditorModal();
+  });
+
+  state.dom.cardEditor.tagList = document.getElementById('cardEditorModalTagList');
+  state.dom.cardEditor.tagInput = document.getElementById('cardEditorModalTagInput');
+  state.dom.cardEditor.tagInput.addEventListener('keydown', event => {
+    switch (event.key) {
+      case 'Enter':
+        const tagText = state.dom.cardEditor.tagInput.value.trim();
+        state.dom.cardEditor.tagInput.value = '';
+
+        if (
+          !tagText ||
+          Array.from(state.dom.cardEditor.tagList.children).some(
+            child => child.textContent === tagText,
+          )
+        ) {
+          return;
+        }
+
+        const bgColor = Utils.stringToColor(tagText);
+
+        const badge = document.createElement('span');
+        badge.classList.add('badge', 'rounded-pill');
+        badge.textContent = tagText;
+        badge.style.backgroundColor = bgColor;
+
+        state.dom.cardEditor.tagList.appendChild(badge);
+        state.cardEditor.tags.push(tagText);
+
+        break;
+      case 'Backspace':
+        if (
+          state.dom.cardEditor.tagInput.value !== '' ||
+          !state.dom.cardEditor.tagList.lastElementChild
+        ) {
+          return;
+        }
+
+        state.dom.cardEditor.tagList.lastElementChild.remove();
+        state.cardEditor.tags.pop();
+        break;
+    }
+  });
+
   await renderTagList();
-});
-document.getElementById('importBtn').addEventListener('click', () => {
-  importInput.click();
-});
+  await renderCardList();
 
-Utils.hideLoadingScreen();
+  Utils.hideLoadingScreen();
+}
+
+await main();

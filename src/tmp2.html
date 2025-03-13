@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SVG Icon Button Example</title>
+    <style>
+      /* 
+      Button base style:
+      - No background
+      - No border
+      - Cursor pointer
+      - Slightly larger size so the icon is visible
+      - Transition for scale on hover
+    */
+      .icon-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px; /* Some padding for clickable area */
+        transition: transform 0.2s ease;
+        /* Optionally align icon if you have text next to it */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* On hover, scale up the icon */
+      .icon-button:hover {
+        transform: scale(1.2);
+      }
+
+      /* Style the icon’s size with inline SVG */
+      .icon-button svg {
+        width: 24px; /* Adjust as needed */
+        height: 24px; /* Adjust as needed */
+        /* If you want the icon color to match text color, use fill="currentColor" in the SVG */
+        fill: currentColor;
+      }
+
+      /* Just a container so it’s easier to see multiple buttons or background */
+      .container {
+        padding: 20px;
+        font-family: sans-serif;
+      }
+
+      .container p {
+        margin: 20px 0;
+      }
+
+      /* Optional style to show multiple icon buttons in a row with spacing */
+      .icon-button + .icon-button {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>SVG Icon Buttons</h2>
+      <p>Hover over the buttons to see the scaling effect.</p>
+
+      <!-- Example 1: Home icon -->
+      <button class="icon-button" aria-label="Home">
+        <!-- Inline SVG: simple home icon -->
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M3 9.75l9-6 9 6v10.5a1.5 1.5 0 01-1.5 1.5h-4.5v-6h-6v6H4.5A1.5 1.5 0 013 20.25V9.75z"
+          ></path>
+        </svg>
+      </button>
+
+      <!-- Example 2: Heart icon -->
+      <button class="icon-button" aria-label="Favorite">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 017.5 3 5.5 5.5 0 0113 8.5a5.5 5.5 0 014.5-5.5A5.5 5.5 0 0122 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+          />
+        </svg>
+      </button>
+
+      <!-- Example 3: “Plus” icon -->
+      <button class="icon-button" aria-label="Add">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 11H13V5a1 1 0 10-2 0v6H5a1 1 0 100 2h6v6a1 1 0 102 0v-6h6a1 1 0 100-2z" />
+        </svg>
+      </button>
+
+      <!-- Example 3: “Plus” icon -->
+      <button class="icon-button" aria-label="Add">
+        <svg>
+          <use xlink:href="assets/add.svg#icon-home"></use>
+        </svg>
+      </button>
+    </div>
+  </body>
+</html>
