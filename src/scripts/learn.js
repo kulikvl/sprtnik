@@ -37,7 +37,6 @@ async function loadNextCard() {
     state.cardViewer.instance = new CardViewer(state.stores.image);
     await state.cardViewer.instance.init(state.cardViewer.card);
   } else {
-    await state.cardViewer.instance.flip();
     state.cardViewer.instance.setCardData(state.cardViewer.card);
   }
 }

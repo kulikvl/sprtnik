@@ -44,16 +44,16 @@ async function renderTagList() {
     tagBtn.style.backgroundColor = bgColor;
 
     if (state.selectedTags.includes(tag)) {
-      tagBtn.classList.add('active');
+      tagBtn.textContent = tag + ' ✔';
     }
 
     tagBtn.addEventListener('click', async () => {
       if (state.selectedTags.includes(tag)) {
         state.selectedTags = state.selectedTags.filter(t => t !== tag);
-        tagBtn.classList.remove('active');
+        tagBtn.textContent = tag;
       } else {
         state.selectedTags.push(tag);
-        tagBtn.classList.add('active');
+        tagBtn.textContent = tag + ' ✔';
       }
       await renderCardList();
     });
@@ -70,7 +70,7 @@ async function openCardEditor(card, mode) {
   for (const tag of tags) {
     const bgColor = Utils.stringToColor(tag);
     const badge = document.createElement('span');
-    badge.classList.add('badge', 'rounded-pill');
+    badge.classList.add('tag');
     badge.textContent = tag;
     badge.style.backgroundColor = bgColor;
     state.dom.cardEditor.tagList.appendChild(badge);
@@ -152,14 +152,27 @@ async function handleSaveCard() {
   await renderTagList();
 }
 
+async function handleDeleteCard() {
+  if (!state.cardEditor?.card?.id) return;
+
+  await state.stores.card.delete(state.cardEditor.card.id);
+
+  hideCardEditorModal();
+
+  await renderCardList();
+  await renderTagList();
+}
+
 function showCardEditorModal() {
   state.dom.cardEditor.modal.classList.add('show');
+  document.body.classList.add('modal-active');
 }
 
 function hideCardEditorModal() {
   state.dom.cardEditor.modal.classList.remove('show');
   const hideEvent = new Event('modalHidden');
   state.dom.cardEditor.modal.dispatchEvent(hideEvent);
+  document.body.classList.remove('modal-active');
 }
 
 // =================== Main ===================
@@ -243,6 +256,10 @@ async function main() {
   cardEditorModalSaveBtnEl.addEventListener('click', async () => {
     await handleSaveCard();
   });
+  const cardEditorModalDeleteBtnEl = document.getElementById('cardEditorModalDeleteBtn');
+  cardEditorModalDeleteBtnEl.addEventListener('click', async () => {
+    await handleDeleteCard();
+  });
   const cardEditorModalCloseBtnEl = document.getElementById('cardEditorModalCloseBtn');
   cardEditorModalCloseBtnEl.addEventListener('click', async () => {
     hideCardEditorModal();
@@ -268,7 +285,7 @@ async function main() {
         const bgColor = Utils.stringToColor(tagText);
 
         const badge = document.createElement('span');
-        badge.classList.add('badge', 'rounded-pill');
+        badge.classList.add('tag');
         badge.textContent = tagText;
         badge.style.backgroundColor = bgColor;
 

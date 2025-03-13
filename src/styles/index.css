@@ -7,24 +7,25 @@
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
 }
 
 .modal.show {
   opacity: 1;
   pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-dialog {
   position: relative;
   width: 90%;
-  max-width: 600px;
   margin: 10% auto;
 }
 
 .modal-content {
   background: #fff;
-  border-radius: 4px;
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -32,6 +33,12 @@
 .modal-body,
 .modal-footer {
   padding: 16px;
+}
+
+.modal-body {
+  max-height: 60vh; /* Constrain modal height */
+  overflow: auto; /* Scroll if content is too tall */
+  margin: auto;
 }
 
 .modal-header {
@@ -44,6 +51,10 @@
 .modal-title {
   margin: 0;
   font-size: 1.25rem;
+}
+
+body.modal-active {
+  overflow: hidden;
 }
 
 .close-button,
@@ -135,7 +146,6 @@ https://github.com/codex-team/editor.js/discussions/1867
   display: flex;
   width: 100%;
   align-items: center;
-  /* justify-content: flex-start; */
   gap: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -194,16 +204,12 @@ https://github.com/codex-team/editor.js/discussions/1867
 
 .tag {
   background-color: white;
-  border: 0px solid rgb(229, 229, 229);
+  border: none;
   border-radius: 16px;
   color: white;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  padding: 5px 10px;
   cursor: pointer;
-}
-
-.tag.active {
-  filter: brightness(0.85);
+  transition: filter 0.3s ease;
 }
 
 #cardEditor {
