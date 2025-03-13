@@ -2,7 +2,6 @@ import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Image from '@editorjs/image';
-import Delimiter from '@editorjs/delimiter';
 import { ImageStore } from './database';
 
 export class EditorAdapter {
@@ -32,7 +31,6 @@ export class EditorAdapter {
         holder: this.#containerId,
         data,
         tools: {
-          delimiter: Delimiter,
           header: Header,
           list: List,
           image: {
@@ -95,30 +93,6 @@ export class EditorAdapter {
     return await this.#editorInstance.save();
   }
 
-  // async setReadOnly(flag) {
-  //   if (this.#isReadOnly === flag) return;
-
-  //   this.#isReadOnly = flag;
-
-  //   if (this.#isReadOnly) {
-  //     document.querySelectorAll('.codex-editor__loader').forEach(element => {
-  //       element.style.setProperty('height', '30px', 'important');
-  //     });
-  //     document.querySelectorAll('.codex-editor__redactor').forEach(element => {
-  //       element.style.setProperty('padding-bottom', '30px', 'important');
-  //     });
-  //   } else {
-  //     document.querySelectorAll('.codex-editor__loader').forEach(element => {
-  //       element.style.setProperty('height', '250px', 'important');
-  //     });
-  //     document.querySelectorAll('.codex-editor__redactor').forEach(element => {
-  //       element.style.setProperty('padding-bottom', '250px', 'important');
-  //     });
-  //   }
-
-  //   await this.#editorInstance.readOnly.toggle();
-  // }
-
   destroy() {
     this.#editorInstance.destroy();
   }
@@ -157,6 +131,13 @@ export class CardEditor {
 
     await this.#questionEditor.init(card?.question, readOnly);
     await this.#answerEditor.init(card?.answer, readOnly);
+
+    document.querySelectorAll('.codex-editor__loader').forEach(element => {
+      element.style.setProperty('height', '250px', 'important');
+    });
+    document.querySelectorAll('.codex-editor__redactor').forEach(element => {
+      element.style.setProperty('padding-bottom', '250px', 'important');
+    });
   }
 
   #buildCardUI() {
