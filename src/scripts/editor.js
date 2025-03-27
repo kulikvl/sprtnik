@@ -1,15 +1,9 @@
 import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import Image from '@editorjs/image';
-import { ImageStore } from './database';
 
 export class EditorAdapter {
-  /**
-   * @type {EditorJS}x
-   */
   #editorInstance = null;
-
   #containerId = null;
   #imageStore = null;
 
@@ -23,15 +17,12 @@ export class EditorAdapter {
 
     return new Promise((resolve, _) => {
       this.#editorInstance = new EditorJS({
-        // minHeight: 250,
         autofocus: false,
         inlineToolbar: false,
         hideToolbar: true,
-        placeholder: 'Start typing...',
         holder: this.#containerId,
         data,
         tools: {
-          header: Header,
           list: List,
           image: {
             class: Image,
@@ -58,7 +49,6 @@ export class EditorAdapter {
           if (readOnly) {
             this.#editorInstance.readOnly.toggle();
           }
-          // buttons on the left always
           // https://github.com/codex-team/editor.js/issues/2405
           this.#editorInstance.ui.nodes.wrapper.classList.remove('codex-editor--narrow');
           resolve();
@@ -99,22 +89,10 @@ export class EditorAdapter {
 }
 
 export class CardEditor {
-  /**
-   * @type {EditorAdapter}
-   */
   #questionEditor = null;
-
-  /**
-   * @type {EditorAdapter}
-   */
   #answerEditor = null;
-
-  /**
-   * @type {ImageStore}
-   */
   #imageStore = null;
 
-  // DOM
   #containerEl = null;
   #questionEditorEl = null;
   #answerEditorEl = null;
@@ -126,8 +104,8 @@ export class CardEditor {
   async init(card, readOnly) {
     this.#buildCardUI();
 
-    this.#questionEditor = new EditorAdapter('questionEditor', this.#imageStore);
-    this.#answerEditor = new EditorAdapter('answerEditor', this.#imageStore);
+    this.#questionEditor = new EditorAdapter('question-editor', this.#imageStore);
+    this.#answerEditor = new EditorAdapter('answer-editor', this.#imageStore);
 
     await this.#questionEditor.init(card?.question, readOnly);
     await this.#answerEditor.init(card?.answer, readOnly);
@@ -141,15 +119,15 @@ export class CardEditor {
   }
 
   #buildCardUI() {
-    this.#containerEl = document.getElementById('cardEditor');
+    this.#containerEl = document.getElementById('card-editor');
 
     this.#questionEditorEl = document.createElement('div');
-    this.#questionEditorEl.id = 'questionEditor';
+    this.#questionEditorEl.id = 'question-editor';
     this.#questionEditorEl.classList.add('editor-container');
     this.#containerEl.appendChild(this.#questionEditorEl);
 
     this.#answerEditorEl = document.createElement('div');
-    this.#answerEditorEl.id = 'answerEditor';
+    this.#answerEditorEl.id = 'answer-editor';
     this.#answerEditorEl.classList.add('editor-container');
     this.#containerEl.appendChild(this.#answerEditorEl);
   }
@@ -180,22 +158,10 @@ export class CardEditor {
 }
 
 export class CardViewer {
-  /**
-   * @type {EditorAdapter}
-   */
   #questionEditor = null;
-
-  /**
-   * @type {EditorAdapter}
-   */
   #answerEditor = null;
-
-  /**
-   * @type {ImageStore}
-   */
   #imageStore = null;
 
-  // DOM
   #containerEl = null;
   #questionEditorEl = null;
   #answerEditorEl = null;
@@ -208,8 +174,8 @@ export class CardViewer {
   async init(card) {
     this.#buildCardUI();
 
-    this.#questionEditor = new EditorAdapter('questionViewer', this.#imageStore);
-    this.#answerEditor = new EditorAdapter('answerViewer', this.#imageStore);
+    this.#questionEditor = new EditorAdapter('question-viewer', this.#imageStore);
+    this.#answerEditor = new EditorAdapter('answer-viewer', this.#imageStore);
 
     await this.#questionEditor.init(card.question, true);
     await this.#answerEditor.init(card.answer, true);
@@ -223,10 +189,10 @@ export class CardViewer {
   }
 
   #buildCardUI() {
-    this.#containerEl = document.getElementById('cardViewer');
+    this.#containerEl = document.getElementById('card-viewer');
 
     this.#questionEditorEl = document.createElement('div');
-    this.#questionEditorEl.id = 'questionViewer';
+    this.#questionEditorEl.id = 'question-viewer';
     this.#containerEl.appendChild(this.#questionEditorEl);
 
     this.#separatorEl = document.createElement('hr');
@@ -234,7 +200,7 @@ export class CardViewer {
     this.#containerEl.appendChild(this.#separatorEl);
 
     this.#answerEditorEl = document.createElement('div');
-    this.#answerEditorEl.id = 'answerViewer';
+    this.#answerEditorEl.id = 'answer-viewer';
     this.#answerEditorEl.classList.add('hidden');
     this.#containerEl.appendChild(this.#answerEditorEl);
   }

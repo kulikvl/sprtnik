@@ -1,8 +1,9 @@
-import { LearningProgressService } from './app';
+import { LearningProgressService } from './learningProgress';
 import { CardStore, Database, ImageStore } from './database';
 import { CardViewer } from './editor';
 import { Utils } from './utils';
 
+// #region UI Functions
 function updateStats() {
   const stats = LearningProgressService.getStats();
 
@@ -31,6 +32,8 @@ async function loadNextCard() {
     return;
   }
 
+  if (state.cardViewer.isFlipped) state.cardViewer.instance.flip();
+
   state.cardViewer.card = await state.stores.card.get(queueIds[0]);
 
   if (!state.cardViewer.instance) {
@@ -43,6 +46,7 @@ async function loadNextCard() {
 
 async function flip() {
   state.cardViewer.instance.flip();
+  state.cardViewer.isFlipped = !state.cardViewer.isFlipped;
 }
 
 async function markEasy() {
@@ -59,9 +63,28 @@ async function markOk() {
 async function markAgain() {
   await loadNextCard();
 }
+// #endregion
 
-// =================== Main ===================
+// #region DOM & Event Listener Setup
+function setup() {
+  const flipBtnEl = document.getElementById('flip-btn');
+  const againBtnEl = document.getElementById('again-btn');
+  const okBtnEl = document.getElementById('ok-btn');
+  const easyBtnEl = document.getElementById('easy-btn');
+  state.dom.main = document.getElementById('card-container');
+  state.dom.footer = document.getElementById('footer');
+  state.dom.progress.bar = document.getElementById('progress-bar');
+  state.dom.progress.doneCount = document.getElementById('done-count');
+  state.dom.progress.allCount = document.getElementById('all-count');
 
+  flipBtnEl.addEventListener('click', flip);
+  againBtnEl.addEventListener('click', markAgain);
+  okBtnEl.addEventListener('click', markOk);
+  easyBtnEl.addEventListener('click', markEasy);
+}
+// #endregion
+
+// #region Application State
 const state = {
   stores: {
     image: null,
@@ -70,6 +93,7 @@ const state = {
   cardViewer: {
     instance: null,
     card: null,
+    isFlipped: false,
   },
   dom: {
     footer: null,
@@ -81,6 +105,7 @@ const state = {
     },
   },
 };
+// #endregion
 
 async function main() {
   const database = new Database();
@@ -89,21 +114,7 @@ async function main() {
   state.stores.image = new ImageStore(database);
   state.stores.card = new CardStore(database);
 
-  const flipBtnEl = document.getElementById('flipBtn');
-  const againBtnEl = document.getElementById('againBtn');
-  const okBtnEl = document.getElementById('okBtn');
-  const easyBtnEl = document.getElementById('easyBtn');
-  state.dom.main = document.getElementById('main');
-  state.dom.footer = document.getElementById('footer');
-  state.dom.progress.bar = document.getElementById('progressBar');
-  state.dom.progress.doneCount = document.getElementById('doneCount');
-  state.dom.progress.allCount = document.getElementById('allCount');
-
-  flipBtnEl.addEventListener('click', flip);
-  againBtnEl.addEventListener('click', markAgain);
-  okBtnEl.addEventListener('click', markOk);
-  easyBtnEl.addEventListener('click', markEasy);
-
+  setup();
   await loadNextCard();
 
   Utils.hideLoadingScreen();

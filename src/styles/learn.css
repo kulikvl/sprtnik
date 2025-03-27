@@ -2,28 +2,31 @@ body {
   padding: 0;
   margin: 0;
   overflow: hidden;
-  height: 100%;
 }
 
-.container {
+main {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  margin-left: 2rem;
-  margin-right: 2rem;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow: hidden;
 }
 
-.header {
+#header {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 1rem;
   width: 100%;
   box-sizing: border-box;
-  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
-.main {
+#card-container {
   flex: 1 1 auto;
   overflow-y: auto;
   padding: 3rem;
@@ -31,12 +34,13 @@ body {
   border-radius: 32px;
 }
 
-.footer {
+#footer {
   flex: 0 0 auto;
-  padding: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 1rem;
 }
 
 .card-counter {
@@ -50,11 +54,11 @@ body {
   flex-shrink: 0;
 }
 
-#doneCount {
+#done-count {
   color: #2e2e2e;
 }
 
-#allCount {
+#all-count {
   color: #c1c1c3;
 }
 
@@ -65,9 +69,10 @@ body {
   overflow: hidden;
   height: 1rem;
   position: relative;
+  width: 100%;
 }
 
-.progress-bar {
+#progress-bar {
   left: 0;
   top: 0;
   height: 100%;
@@ -83,5 +88,3 @@ body {
   background-color: #ccc;
   margin: 1rem 0;
 }
-
-

@@ -14,28 +14,24 @@
     <div class="loading-overlay"></div>
 
     <main>
-      <div class="container">
-        <div class="header">
-          <a href="/" class="emoji-link">↩</a>
-          <div class="card-counter"><span id="doneCount">0</span><span id="allCount">/0</span></div>
-          <div class="progress-bar-container">
-            <div id="progressBar" class="progress-bar"></div>
-          </div>
+      <header id="header">
+        <a href="/" class="emoji-link">↩</a>
+        <div class="card-counter"><span id="done-count">0</span><span id="all-count">/0</span></div>
+        <div class="progress-bar-container">
+          <div id="progress-bar"></div>
         </div>
+      </header>
 
-        <div id="main" class="main">
-          <div id="cardViewer"></div>
-        </div>
+      <section id="card-container">
+        <div id="card-viewer"></div>
+      </section>
 
-        <div id="footer" class="footer">
-          <button id="flipBtn" type="button" class="emoji-button">👀</button>
-          <div>
-            <button id="againBtn" type="button" class="emoji-button">🥵</button>
-            <button id="okBtn" type="button" class="emoji-button">🆗</button>
-            <button id="easyBtn" type="button" class="emoji-button">🚀</button>
-          </div>
-        </div>
-      </div>
+      <footer id="footer">
+        <button id="flip-btn" type="button" class="emoji-button">👀</button>
+        <button id="again-btn" type="button" class="emoji-button">🥵</button>
+        <button id="ok-btn" type="button" class="emoji-button">🆗</button>
+        <button id="easy-btn" type="button" class="emoji-button">🚀</button>
+      </footer>
     </main>
   </body>
 </html>

@@ -13,59 +13,63 @@
   <body>
     <div class="loading-overlay"></div>
 
-    <div id="cardEditorModal" class="modal">
+    <dialog id="card-editor-modal" class="modal">
       <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button id="cardEditorModalCloseBtn" class="icon-button">
-              <object type="image/svg+xml" data="icons/cancel.svg"></object>
+        <header class="modal-header">
+          <button id="card-editor-modal-close-btn" class="icon-button">
+            <img src="icons/cancel.svg" alt="Close" width="30px" height="30px"/>
+          </button>
+          <h1 id="card-editor-modal-title" class="modal-title">Edit card</h1>
+          <div class="modal-actions">
+            <button id="card-editor-modal-delete-btn" class="icon-button">
+              <img src="icons/delete.svg" alt="Delete" width="30px" height="30px" />
             </button>
-            <h1 class="modal-title" id="cardEditorModalLabel">Edit card</h1>
-            <div>
-              <button id="cardEditorModalDeleteBtn" class="icon-button">
-                <object type="image/svg+xml" data="icons/delete.svg"></object>
-              </button>
-              <button id="cardEditorModalSaveBtn" class="icon-button">
-                <object type="image/svg+xml" data="icons/save.svg"></object>
-              </button>
-            </div>
+            <button id="card-editor-modal-save-btn" class="icon-button">
+              <img src="icons/save.svg" alt="Save" width="35px" height="35px" />
+            </button>
           </div>
-          <div class="modal-body">
-            <div id="cardEditor"></div>
+        </header>
+        <section class="modal-body">
+          <div id="card-editor"></div>
+        </section>
+        <footer class="modal-footer">
+          <div id="card-editor-modal-tag-container">
+            <div id="card-editor-modal-tag-list"></div>
+            <input
+              type="text"
+              id="card-editor-modal-tag-input"
+              placeholder="Tags here"
+            />
           </div>
-          <div class="modal-footer">
-            <div class="card-editor-modal-tag-container">
-              <div id="cardEditorModalTagList" class="card-editor-modal-tag-list"></div>
-              <input
-                type="text"
-                class="card-editor-modal-tag-input"
-                id="cardEditorModalTagInput"
-                placeholder="Type a tag and press Enter"
-              />
-            </div>
-          </div>
-        </div>
+        </footer>
       </div>
-    </div>
+    </dialog>
 
     <main>
-      <input type="file" id="importInput" accept=".zip" style="display: none" />
-      <button id="importBtn" class="icon-button">
-        <object type="image/svg+xml" data="icons/import.svg"></object>
-      </button>
-      <button id="exportBtn" class="icon-button">
-        <object type="image/svg+xml" data="icons/export.svg"></object>
-      </button>
-      <button id="addCardBtn" class="icon-button">
-        <object type="image/svg+xml" data="icons/add.svg"></object>
-      </button>
-      <button id="learnBtn" class="icon-button">
-        <object type="image/svg+xml" data="icons/learn.svg"></object>
-      </button>
+      <input type="file" id="import-input" accept=".zip" class="hidden" />
+
+      <nav>
+        <button id="import-btn" class="icon-button">
+          <img src="icons/import.svg" alt="Import" width="30px" height="30px" />
+        </button>
+        <button id="export-btn" class="icon-button">
+          <img src="icons/export.svg" alt="Export" width="30px" height="30px" />
+        </button>
+        <button id="add-card-btn" class="icon-button">
+          <img src="icons/add.svg" alt="Add" width="30px" height="30px" />
+        </button>
+        <button id="learn-btn" class="icon-button">
+          <img src="icons/learn.svg" alt="Learn" width="30px" height="30px" />
+        </button>
+      </nav>
+
       <hr />
-      <div id="tagList"></div>
+
+      <section id="tag-list"></section>
+
       <hr />
-      <div id="cardList"></div>
+
+      <section id="card-list"></section>
     </main>
   </body>
 </html>

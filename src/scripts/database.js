@@ -1,5 +1,3 @@
-import JSZip from 'jszip';
-
 export const schema = [
   {
     storeName: 'cards',
@@ -133,5 +131,3 @@ export class ImageStore extends Store {
     super(database, 'images');
   }
 }
-
-// https://github.com/codex-team/editor.js/blob/next/public/assets/demo.css
