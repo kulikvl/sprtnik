@@ -1,8 +1,7 @@
+import type { OutputData } from '@editorjs/editorjs';
+
 export class Utils {
-  /**
-   * Trigger a browser download of a Blob.
-   */
-  static downloadBlob(blob, filename) {
+  public static downloadBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -14,11 +13,7 @@ export class Utils {
     URL.revokeObjectURL(url);
   }
 
-  static hideLoadingScreen() {
-    document.querySelector('.loading-overlay').classList.add('fade-out');
-  }
-
-  static stringToColor(str) {
+  public static stringToColor(str: string) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
@@ -27,7 +22,7 @@ export class Utils {
     return '#' + '00000'.substring(0, 6 - color.length) + color;
   }
 
-  static getQuestionSnippet(editorData, maxLen = 20) {
+  public static getSnippet(editorData: OutputData, maxLen = 20) {
     if (!editorData?.blocks?.length) return 'No content';
 
     for (const block of editorData.blocks) {
@@ -37,5 +32,13 @@ export class Utils {
       }
     }
     return 'No paragraph found';
+  }
+
+  public static findElementByIdOrFail<T extends HTMLElement = HTMLElement>(id: string): T {
+    const el = document.getElementById(id);
+    if (!el) {
+      throw new Error(`Element with ID "${id}" not found`);
+    }
+    return el as T;
   }
 }

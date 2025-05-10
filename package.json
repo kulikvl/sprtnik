@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "prettier": "3.5.3",
+    "typescript": "5.8.3",
     "vite": "6.2.1"
   },
   "dependencies": {

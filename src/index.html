@@ -2,74 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="google" content="notranslate" />
-    <link rel="stylesheet" href="/styles/global.css" />
-    <link rel="stylesheet" href="/styles/index.css" />
-    <script type="module" src="/scripts/index.js"></script>
+    <link rel="stylesheet" href="styles/global.css" />
+    <script type="module" src="scripts/main.js"></script>
     <title>Šprtník</title>
   </head>
   <body>
-    <div class="loading-overlay"></div>
-
-    <dialog id="card-editor-modal" class="modal">
-      <div class="modal-dialog">
-        <header class="modal-header">
-          <button id="card-editor-modal-close-btn" class="icon-button">
-            <img src="icons/cancel.svg" alt="Close" width="30px" height="30px"/>
-          </button>
-          <h1 id="card-editor-modal-title" class="modal-title">Edit card</h1>
-          <div class="modal-actions">
-            <button id="card-editor-modal-delete-btn" class="icon-button">
-              <img src="icons/delete.svg" alt="Delete" width="30px" height="30px" />
-            </button>
-            <button id="card-editor-modal-save-btn" class="icon-button">
-              <img src="icons/save.svg" alt="Save" width="35px" height="35px" />
-            </button>
-          </div>
-        </header>
-        <section class="modal-body">
-          <div id="card-editor"></div>
-        </section>
-        <footer class="modal-footer">
-          <div id="card-editor-modal-tag-container">
-            <div id="card-editor-modal-tag-list"></div>
-            <input
-              type="text"
-              id="card-editor-modal-tag-input"
-              placeholder="Tags here"
-            />
-          </div>
-        </footer>
-      </div>
-    </dialog>
-
-    <main>
-      <input type="file" id="import-input" accept=".zip" class="hidden" />
-
-      <nav>
-        <button id="import-btn" class="icon-button">
-          <img src="icons/import.svg" alt="Import" width="30px" height="30px" />
-        </button>
-        <button id="export-btn" class="icon-button">
-          <img src="icons/export.svg" alt="Export" width="30px" height="30px" />
-        </button>
-        <button id="add-card-btn" class="icon-button">
-          <img src="icons/add.svg" alt="Add" width="30px" height="30px" />
-        </button>
-        <button id="learn-btn" class="icon-button">
-          <img src="icons/learn.svg" alt="Learn" width="30px" height="30px" />
-        </button>
-      </nav>
-
-      <hr />
-
-      <section id="tag-list"></section>
-
-      <hr />
-
-      <section id="card-list"></section>
-    </main>
+    <main id="app"></main>
   </body>
 </html>
