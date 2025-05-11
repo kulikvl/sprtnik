@@ -5,7 +5,7 @@ export class Router {
   private currentPage: Page | null = null;
 
   public constructor() {
-    window.addEventListener('popstate', async () => await this.handleLocation());
+    window.addEventListener('hashchange', async () => await this.handleLocation());
   }
 
   public register(path: string, createPage: () => Page) {
@@ -14,18 +14,20 @@ export class Router {
   }
 
   public async init() {
-    await this.handleLocation();
+    if (!window.location.hash) {
+      window.location.hash = '/';
+    } else {
+      await this.handleLocation();
+    }
   }
 
   private async handleLocation() {
-    let path = window.location.pathname;
-    let createPage = this.routes[path];
+    const path = window.location.hash.slice(1);
 
+    let createPage = this.routes[path];
     if (!createPage) {
-      const fallback = this.routes['/']!;
-      history.replaceState(null, '', '/');
-      path = '/';
-      createPage = fallback;
+      window.location.hash = '/';
+      return;
     }
 
     if (this.currentPage) {
@@ -37,7 +39,6 @@ export class Router {
   }
 
   public async navigate(path: string) {
-    history.pushState(null, '', path);
-    await this.handleLocation();
+    window.location.hash = path;
   }
 }

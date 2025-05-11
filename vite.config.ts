@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: 'src',
-  base: '/sprtnik/',
+  base: '', // Generate relative URLs for all assets (no leading slash).
   build: {
     target: 'esnext',
     outDir: '../dist',
