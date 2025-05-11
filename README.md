@@ -50,3 +50,10 @@ npm run preview # Serve the production build locally
 Sprtnik is currently deployed via GitHub Pages:
 
 https://kulikvl.github.io/sprtnik
+
+## Screenshots
+
+<img width="553" alt="Screenshot 2025-05-11 at 12 34 07" src="https://github.com/user-attachments/assets/0ec288ec-8021-475d-8d49-c21560d33b22" />
+
+<img width="551" alt="Screenshot 2025-05-11 at 12 34 34" src="https://github.com/user-attachments/assets/d934390e-7768-49a8-81ea-8fce42add0f4" />
+
